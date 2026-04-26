@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Student — Whiteboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Student dashboard</h1>
+<p class="text-muted">View materials, announcements, quizzes, and polls.</p>
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted">Materials</h2>
+        <p class="display-6">{{ materials_count }}</p>
+        <a href="{{ url_for('materials.materials_list') }}" class="stretched-link">Browse PDFs</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted">Quizzes</h2>
+        <p class="display-6">{{ quizzes_count }}</p>
+        <a href="{{ url_for('quizzes.quizzes_list') }}" class="stretched-link">Take quizzes</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted">Polls</h2>
+        <a href="{{ url_for('polls.polls_list') }}" class="btn btn-outline-primary btn-sm">Open polls</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-4">
+  <div class="col-lg-6">
+    <h2 class="h5">Recent announcements</h2>
+    <ul class="list-group">
+      {% for a in announcements %}
+      <li class="list-group-item">
+        <a href="{{ url_for('announcements.announcements_detail', announcement_id=a.id) }}">{{ a.title }}</a>
+        <span class="text-muted small d-block">{{ a.posted_at.strftime('%Y-%m-%d') }}</span>
+      </li>
+      {% else %}
+      <li class="list-group-item text-muted">No announcements yet.</li>
+      {% endfor %}
+    </ul>
+    <a class="btn btn-link px-0" href="{{ url_for('announcements.announcements_list') }}">All announcements</a>
+  </div>
+  <div class="col-lg-6">
+    <h2 class="h5">Recent polls</h2>
+    <ul class="list-group">
+      {% for p in polls %}
+      <li class="list-group-item">{{ p.question }}</li>
+      {% else %}
+      <li class="list-group-item text-muted">No polls yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

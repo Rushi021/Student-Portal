@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Courses — Whiteboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0 fw-semibold">Courses</h1>
+  <span class="text-muted small">{{ courses|length }} result(s)</span>
+</div>
+
+<p class="text-muted">
+  {% if current_user.role.value == 'student' %}
+  Your enrolled courses
+  {% elif current_user.role.value == 'instructor' %}
+  Courses you teach
+  {% else %}
+  All courses
+  {% endif %}
+</p>
+
+<div class="row g-3">
+  {% for c in courses %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100 border-0 shadow-sm course-card">
+      <div class="course-hero {% if not c.is_active %}course-hero-closed{% endif %}" style="background-image: url('{{ c.image_url or "https://picsum.photos/seed/" ~ c.code|replace('.', '-') ~ "/800/300" }}');">
+        {% if not c.is_active %}
+        <span class="badge text-bg-dark">Closed</span>
+        {% endif %}
+      </div>
+      <div class="card-body">
+        <div class="small text-muted">{{ c.code }} · {{ c.term }}</div>
+        <h2 class="h6 mt-1 fw-semibold">{{ c.title }}</h2>
+        <div class="small text-muted">Instructor: {{ c.instructor.name if c.instructor else "N/A" }}</div>
+        {% if c.is_active %}
+        <span class="badge mt-2 su-badge">Open</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12">
+    <div class="alert alert-light border">No courses found.</div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

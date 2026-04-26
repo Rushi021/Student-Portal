@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz.title }} — Whiteboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-2">{{ quiz.title }}</h1>
+{% if quiz.description %}
+<div class="card border-0 shadow-sm mb-4"><div class="card-body" style="white-space: pre-wrap;">{{ quiz.description }}</div></div>
+{% endif %}
+{% if submission and submission.score is not none %}
+<div class="alert alert-success">Graded: your score is <strong>{{ submission.score }}</strong>.</div>
+{% endif %}
+<form method="post" action="{{ url_for('quizzes.quizzes_submit', quiz_id=quiz.id) }}">
+  <div class="mb-3">
+    <label class="form-label" for="submission_text">Your answers</label>
+    <textarea class="form-control" id="submission_text" name="submission_text" rows="8" required>{{ submission.submission_text if submission else '' }}</textarea>
+  </div>
+  <button class="btn btn-primary" type="submit">Submit</button>
+  <a class="btn btn-link" href="{{ url_for('quizzes.quizzes_list') }}">Back</a>
+</form>
+{% endblock %}

@@ -1,0 +1,15 @@
+# Do not deploy to Elastic Beanstalk
+.venv
+venv
+__pycache__
+*.pyc
+.git
+.pytest_cache
+.mypy_cache
+.idea
+.vscode
+*.db
+.DS_Store
+.env
+uploads/*.pdf
+!uploads/.gitkeep

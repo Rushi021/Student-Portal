@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}New announcement — Whiteboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">New announcement</h1>
+<form method="post" class="card border-0 shadow-sm p-4">
+  <div class="mb-3">
+    <label class="form-label" for="title">Title</label>
+    <input class="form-control" id="title" name="title" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="message">Message</label>
+    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+  </div>
+  <button class="btn btn-primary" type="submit">Post</button>
+  <a class="btn btn-link" href="{{ url_for('announcements.announcements_list') }}">Cancel</a>
+</form>
+{% endblock %}

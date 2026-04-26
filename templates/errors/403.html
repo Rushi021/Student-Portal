@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Forbidden — Whiteboard{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="h3">403 — Not allowed</h1>
+  <p class="text-muted">Your role cannot access this page.</p>
+  <a class="btn btn-primary" href="{{ url_for('index') }}">Home</a>
+</div>
+{% endblock %}

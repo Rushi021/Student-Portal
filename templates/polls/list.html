@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Polls — Whiteboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Polls</h1>
+  {% if current_user.role.value == 'instructor' %}
+  <a class="btn btn-primary" href="{{ url_for('polls.polls_new') }}">New poll</a>
+  {% endif %}
+</div>
+<div class="list-group shadow-sm">
+  {% for p in polls %}
+  <div class="list-group-item">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <strong>{{ p.question }}</strong>
+        {% if current_user.role.value in ['instructor', 'admin'] %}
+        <p class="small text-muted mb-0">{{ poll_counts.get(p.id, 0) }} response(s)</p>
+        {% endif %}
+      </div>
+      {% if current_user.role.value == 'student' %}
+        {% if responses.get(p.id) %}
+        <span class="badge text-bg-secondary">You: {{ responses[p.id].response }}</span>
+        {% else %}
+        <form method="post" action="{{ url_for('polls.polls_respond', poll_id=p.id) }}" class="d-flex gap-2 align-items-center">
+          <input class="form-control form-control-sm" name="response" placeholder="Your answer" required style="width: 12rem;">
+          <button class="btn btn-sm btn-primary" type="submit">Vote</button>
+        </form>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <div class="list-group-item text-muted">No polls yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}

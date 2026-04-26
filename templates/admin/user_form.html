@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{% if user %}Edit{% else %}New{% endif %} user — Whiteboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{% if user %}Edit user{% else %}Create user{% endif %}</h1>
+<form method="post" class="card border-0 shadow-sm p-4" style="max-width: 32rem;">
+  <div class="mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input class="form-control" id="name" name="name" required value="{{ user.name if user else '' }}">
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="email">Email</label>
+    <input class="form-control" id="email" name="email" type="email" required value="{{ user.email if user else '' }}">
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="role">Role</label>
+    <select class="form-select" id="role" name="role" required>
+      {% for r in ['student', 'instructor', 'admin'] %}
+      <option value="{{ r }}" {% if user and user.role.value == r %}selected{% endif %}>{{ r }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="password">Password</label>
+    <input class="form-control" id="password" name="password" type="password" {% if not user %}required{% endif %}>
+    {% if user %}<div class="form-text">Leave blank to keep current password.</div>{% endif %}
+  </div>
+  <button class="btn btn-primary" type="submit">Save</button>
+  <a class="btn btn-link" href="{{ url_for('admin.users_list') }}">Cancel</a>
+</form>
+{% endblock %}

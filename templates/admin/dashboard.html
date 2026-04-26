@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Admin — Whiteboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Admin dashboard</h1>
+<p class="text-muted">Manage accounts and roles. The default database is local SQLite; set <code>DATABASE_URL</code> for PostgreSQL (for example on Amazon RDS).</p>
+<div class="card border-0 shadow-sm mb-4" style="max-width: 28rem;">
+  <div class="card-body">
+    <h2 class="h6 text-muted">Registered users</h2>
+    <p class="display-6">{{ user_count }}</p>
+    <a class="btn btn-primary" href="{{ url_for('admin.users_list') }}">Manage users</a>
+  </div>
+</div>
+{% endblock %}

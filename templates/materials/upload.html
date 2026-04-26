@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Upload material — Whiteboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Upload lecture PDF</h1>
+<form method="post" enctype="multipart/form-data" class="card border-0 shadow-sm p-4" style="max-width: 32rem;">
+  <div class="mb-3">
+    <label class="form-label" for="title">Title</label>
+    <input class="form-control" id="title" name="title" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="file">PDF file</label>
+    <input class="form-control" id="file" name="file" type="file" accept=".pdf,application/pdf" required>
+  </div>
+  <button class="btn btn-primary" type="submit">Upload</button>
+  <a class="btn btn-link" href="{{ url_for('materials.materials_list') }}">Cancel</a>
+</form>
+{% endblock %}

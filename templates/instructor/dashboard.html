@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Instructor — Whiteboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Instructor dashboard</h1>
+<p class="text-muted">Upload materials, post announcements, build quizzes and polls.</p>
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 text-muted">My PDFs</h2>
+        <p class="fs-3 mb-0">{{ my_materials }}</p>
+        <a href="{{ url_for('materials.materials_upload') }}">Upload</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 text-muted">Quizzes</h2>
+        <p class="fs-3 mb-0">{{ my_quizzes }}</p>
+        <a href="{{ url_for('quizzes.quizzes_new') }}">New quiz</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 text-muted">Announcements</h2>
+        <p class="fs-3 mb-0">{{ my_announcements }}</p>
+        <a href="{{ url_for('announcements.announcements_new') }}">New post</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 text-muted">Polls</h2>
+        <p class="fs-3 mb-0">{{ my_polls }}</p>
+        <a href="{{ url_for('polls.polls_new') }}">New poll</a>
+      </div>
+    </div>
+  </div>
+</div>
+<hr class="my-4">
+<ul class="list-inline">
+  <li class="list-inline-item"><a href="{{ url_for('materials.materials_list') }}">All materials</a></li>
+  <li class="list-inline-item"><a href="{{ url_for('quizzes.quizzes_list') }}">All quizzes</a></li>
+  <li class="list-inline-item"><a href="{{ url_for('polls.polls_list') }}">All polls</a></li>
+</ul>
+{% endblock %}

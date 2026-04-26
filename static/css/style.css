@@ -1,0 +1,101 @@
+/* Syracuse-oriented styling over Bootstrap */
+:root {
+  --su-orange: #d44500;
+  --su-orange-dark: #b33900;
+  --su-navy: #0f1e56;
+  --su-bg: #f7f8fc;
+}
+
+body,
+.su-body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--su-bg);
+  color: #1f2937;
+}
+
+.navbar-brand {
+  letter-spacing: 0.02em;
+}
+
+.su-navbar {
+  background: linear-gradient(90deg, var(--su-navy), #1d2f74);
+}
+
+.su-navbar .nav-link {
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  margin-right: 0.15rem;
+}
+
+.su-navbar .nav-link:hover,
+.su-navbar .nav-link:focus {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.su-outline-btn {
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.su-outline-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.btn-primary {
+  background-color: var(--su-orange);
+  border-color: var(--su-orange);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--su-orange-dark);
+  border-color: var(--su-orange-dark);
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.card.shadow-sm {
+  box-shadow: 0 6px 18px rgba(15, 30, 86, 0.08) !important;
+}
+
+.course-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(15, 30, 86, 0.16) !important;
+}
+
+.course-hero {
+  height: 130px;
+  background-size: cover;
+  background-position: center;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  position: relative;
+}
+
+.course-hero .badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+.course-hero-closed {
+  filter: grayscale(100%);
+}
+
+.su-badge {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+a {
+  color: #1d3c91;
+}
+
+a:hover {
+  color: #10245d;
+}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Announcements — Whiteboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Announcements</h1>
+  {% if current_user.role.value == 'instructor' %}
+  <a class="btn btn-primary" href="{{ url_for('announcements.announcements_new') }}">New announcement</a>
+  {% endif %}
+</div>
+<div class="list-group shadow-sm">
+  {% for a in announcements %}
+  <a class="list-group-item list-group-item-action" href="{{ url_for('announcements.announcements_detail', announcement_id=a.id) }}">
+    <div class="d-flex justify-content-between">
+      <strong>{{ a.title }}</strong>
+      <span class="text-muted small">{{ a.posted_at.strftime('%Y-%m-%d') }}</span>
+    </div>
+  </a>
+  {% else %}
+  <div class="list-group-item text-muted">No announcements yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}
