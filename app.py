@@ -63,6 +63,10 @@ def create_app(config_name: str | None = None) -> Flask:
     def load_user(user_id: str):
         return db.session.get(User, int(user_id))
 
+    @app.route("/healthz")
+    def healthz():
+        return {"status": "ok"}, 200
+
     app.register_blueprint(auth_bp)
     app.register_blueprint(student_bp)
     app.register_blueprint(instructor_bp)
