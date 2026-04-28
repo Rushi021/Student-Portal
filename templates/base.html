@@ -18,22 +18,22 @@
       {% if current_user.is_authenticated %}
       <ul class="navbar-nav me-auto">
         {% if current_user.role.value == 'student' %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('student.dashboard') }}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'student.dashboard' %}active{% endif %}" href="{{ url_for('student.dashboard') }}">Dashboard</a></li>
         {% elif current_user.role.value == 'instructor' %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('instructor.dashboard') }}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'instructor.dashboard' %}active{% endif %}" href="{{ url_for('instructor.dashboard') }}">Dashboard</a></li>
         {% else %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
         {% endif %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('courses.courses_list') }}">Courses</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('materials.materials_list') }}">Materials</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('announcements.announcements_list') }}">Announcements</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('quizzes.quizzes_list') }}">Quizzes</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('polls.polls_list') }}">Polls</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint and request.endpoint.startswith('courses.') %}active{% endif %}" href="{{ url_for('courses.courses_list') }}">Courses</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint and request.endpoint.startswith('materials.') %}active{% endif %}" href="{{ url_for('materials.materials_list') }}">Materials</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint and request.endpoint.startswith('announcements.') %}active{% endif %}" href="{{ url_for('announcements.announcements_list') }}">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint and request.endpoint.startswith('quizzes.') %}active{% endif %}" href="{{ url_for('quizzes.quizzes_list') }}">Quizzes</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint and request.endpoint.startswith('polls.') %}active{% endif %}" href="{{ url_for('polls.polls_list') }}">Polls</a></li>
         {% if current_user.role.value == 'instructor' %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('materials.materials_upload') }}">Upload PDF</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'materials.materials_upload' %}active{% endif %}" href="{{ url_for('materials.materials_upload') }}">Upload PDF</a></li>
         {% endif %}
         {% if current_user.role.value == 'admin' %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.users_list') }}">Users</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint and request.endpoint.startswith('admin.users') %}active{% endif %}" href="{{ url_for('admin.users_list') }}">Users</a></li>
         {% endif %}
       </ul>
       <span class="navbar-text text-white-50 small me-3">{{ current_user.name }} ({{ current_user.role.value }})</span>
@@ -45,7 +45,7 @@
   </div>
 </nav>
 
-<main class="container pb-5">
+<main class="container pb-5 pt-1">
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
