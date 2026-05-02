@@ -10,4 +10,11 @@
     <a class="btn btn-primary" href="{{ url_for('admin.users_list') }}">Manage users</a>
   </div>
 </div>
+<div class="card border-0 shadow-sm mb-4" style="max-width: 28rem;">
+  <div class="card-body">
+    <h2 class="h6 text-muted">Courses</h2>
+    <p class="display-6">{{ course_count }}</p>
+    <a class="btn btn-primary" href="{{ url_for('admin.courses_list') }}">Manage courses</a>
+  </div>
+</div>
 {% endblock %}

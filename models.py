@@ -71,7 +71,10 @@ class Material(db.Model):
     # Local path relative to upload folder, or S3 object key — see storage service
     file_url = db.Column(db.String(512), nullable=False)
     uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    course_id = db.Column(db.Integer, db.ForeignKey("courses.id"), nullable=True, index=True)
     uploaded_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+
+    course = db.relationship("Course", backref=db.backref("materials", lazy="dynamic"))
 
 
 class Quiz(db.Model):

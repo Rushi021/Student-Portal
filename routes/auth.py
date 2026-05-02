@@ -14,7 +14,7 @@ def _dashboard_for_role(role: UserRole):
         return redirect(url_for("student.dashboard"))
     if role == UserRole.instructor:
         return redirect(url_for("instructor.dashboard"))
-    return redirect(url_for("admin.dashboard"))
+    return redirect(url_for("admin.users_list"))
 
 
 def _safe_next_redirect():

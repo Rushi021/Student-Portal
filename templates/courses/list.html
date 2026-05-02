@@ -32,6 +32,9 @@
         {% if c.is_active %}
         <span class="badge mt-2 su-badge">Open</span>
         {% endif %}
+        <div class="mt-3">
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('materials.materials_list', course_id=c.id) }}">View materials</a>
+        </div>
       </div>
     </div>
   </div>

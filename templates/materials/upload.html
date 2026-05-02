@@ -4,6 +4,15 @@
 <h1 class="h3 mb-3">Upload lecture PDF</h1>
 <form method="post" enctype="multipart/form-data" class="card border-0 shadow-sm p-4" style="max-width: 32rem;">
   <div class="mb-3">
+    <label class="form-label" for="course_id">Course</label>
+    <select class="form-select" id="course_id" name="course_id" required>
+      <option value="">Select a course</option>
+      {% for c in courses %}
+      <option value="{{ c.id }}">{{ c.title }} ({{ c.code }})</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
     <label class="form-label" for="title">Title</label>
     <input class="form-control" id="title" name="title" required>
   </div>

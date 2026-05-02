@@ -7,12 +7,26 @@
   <a class="btn btn-primary" href="{{ url_for('materials.materials_upload') }}">Upload PDF</a>
   {% endif %}
 </div>
+<form method="get" class="row g-2 mb-3">
+  <div class="col-sm-8 col-md-5">
+    <select class="form-select" name="course_id">
+      <option value="">All courses</option>
+      {% for c in courses %}
+      <option value="{{ c.id }}" {% if selected_course_id == c.id %}selected{% endif %}>{{ c.title }} ({{ c.code }})</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-secondary" type="submit">Filter</button>
+  </div>
+</form>
 <p class="text-muted">PDFs are stored under <code>uploads/</code> locally. Set <code>USE_S3=true</code> to use S3 in production.</p>
 <div class="list-group shadow-sm">
   {% for m in materials %}
   <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
     <div>
       <strong>{{ m.title }}</strong>
+      <span class="text-muted small d-block">{{ m.course.title if m.course else "Unassigned course" }}</span>
       <span class="text-muted small d-block">Uploaded {{ m.uploaded_at.strftime('%Y-%m-%d') }}</span>
     </div>
     <div class="btn-group">

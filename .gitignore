@@ -7,4 +7,5 @@ instance/
 whiteboard_dev.db
 uploads/*
 !uploads/.gitkeep
+!uploads/*.pdf
 .DS_Store

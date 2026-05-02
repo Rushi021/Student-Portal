@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}New course — Whiteboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Create course</h1>
+<form method="post" class="card border-0 shadow-sm p-4" style="max-width: 36rem;">
+  <div class="mb-3">
+    <label class="form-label" for="code">Course code</label>
+    <input class="form-control" id="code" name="code" required placeholder="IST.615.M001">
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="title">Title</label>
+    <input class="form-control" id="title" name="title" required placeholder="Cloud Management">
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="term">Term</label>
+    <input class="form-control" id="term" name="term" value="Spring 2026" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="instructor_id">Instructor</label>
+    <select class="form-select" id="instructor_id" name="instructor_id" required>
+      <option value="">Select instructor</option>
+      {% for i in instructors %}
+      <option value="{{ i.id }}">{{ i.name }} ({{ i.email }})</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="image_url">Cover image URL (optional)</label>
+    <input class="form-control" id="image_url" name="image_url" placeholder="/static/img/course-covers/course_image_1.webp">
+  </div>
+  <button class="btn btn-primary" type="submit">Create course</button>
+  <a class="btn btn-link" href="{{ url_for('admin.courses_list') }}">Cancel</a>
+</form>
+{% endblock %}

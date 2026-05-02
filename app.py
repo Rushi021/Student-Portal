@@ -12,6 +12,9 @@
 from __future__ import annotations
 
 import os
+import re
+import shutil
+from pathlib import Path
 
 from flask import Flask, redirect, render_template, url_for
 from flask_login import current_user
@@ -85,7 +88,7 @@ def create_app(config_name: str | None = None) -> Flask:
             return redirect(url_for("student.dashboard"))
         if current_user.role == UserRole.instructor:
             return redirect(url_for("instructor.dashboard"))
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.users_list"))
 
     @app.errorhandler(403)
     def forbidden(_e):
@@ -151,16 +154,12 @@ def create_app(config_name: str | None = None) -> Flask:
 
     @app.cli.command("seed-courses")
     def seed_courses():
-        """Seed 2 courses and enroll the 3 requested students in both courses."""
+        """Seed 2 courses and enroll all students in both courses."""
         db.create_all()
         inst1 = User.query.filter_by(email="instructor1@whiteboard.edu").first()
         inst2 = User.query.filter_by(email="instructor2@whiteboard.edu").first()
-        students = [
-            User.query.filter_by(email="student1@whiteboard.edu").first(),
-            User.query.filter_by(email="student2@whiteboard.edu").first(),
-            User.query.filter_by(email="student3@whiteboard.edu").first(),
-        ]
-        if not inst1 or not inst2 or any(s is None for s in students):
+        students = User.query.filter_by(role=UserRole.student).all()
+        if not inst1 or not inst2 or not students:
             print("Run flask seed-db first.")
             return
 
@@ -194,7 +193,7 @@ def create_app(config_name: str | None = None) -> Flask:
                 if not en:
                     db.session.add(CourseEnrollment(course_id=c.id, student_id=student.id))
 
-        # Ensure requested students only keep the two target courses.
+        # Ensure all students only keep the two target courses.
         for student in students:
             extra = (
                 CourseEnrollment.query.filter_by(student_id=student.id)
@@ -214,7 +213,105 @@ def create_app(config_name: str | None = None) -> Flask:
             CourseEnrollment.query.filter_by(course_id=oc.id).delete()
             db.session.delete(oc)
         db.session.commit()
-        print(f"Seeded courses. New courses created: {created}. Students now have exactly 2 courses each.")
+        print(f"Seeded courses. New courses created: {created}. All students now have exactly 2 courses each.")
+
+    @app.cli.command("seed-course-materials")
+    def seed_course_materials():
+        """Import real uploads PDFs, split across Cloud Management and Deep Learning courses."""
+        db.create_all()
+        app_root = Path(app.root_path)
+        uploads_dir = app_root / "uploads"
+        static_covers = app_root / "static" / "img" / "course-covers"
+        static_covers.mkdir(parents=True, exist_ok=True)
+
+        inst1 = User.query.filter_by(email="instructor1@whiteboard.edu").first()
+        inst2 = User.query.filter_by(email="instructor2@whiteboard.edu").first()
+        if not inst1 or not inst2:
+            print("Run flask seed-db first (instructor1/instructor2 missing).")
+            return
+
+        def _upsert_course(code: str, title: str, instructor_id: int, image_name: str) -> Course:
+            c = Course.query.filter_by(code=code, term="Spring 2026").first()
+            if not c:
+                c = Course(
+                    code=code,
+                    title=title,
+                    term="Spring 2026",
+                    instructor_id=instructor_id,
+                    is_active=True,
+                )
+                db.session.add(c)
+                db.session.flush()
+            c.title = title
+            c.instructor_id = instructor_id
+            c.is_active = True
+            source = uploads_dir / image_name
+            if source.exists():
+                target = static_covers / image_name
+                shutil.copy2(source, target)
+                c.image_url = f"/static/img/course-covers/{image_name}"
+            return c
+
+        cloud_course = _upsert_course("IST.615.M001", "Cloud Management", inst1.id, "course_image_1.webp")
+        deep_course = _upsert_course("IST.691.M001", "Deep Learning", inst2.id, "course_image_2.webp")
+
+        students = User.query.filter_by(role=UserRole.student).all()
+        for student in students:
+            if not student:
+                continue
+            for cid in (cloud_course.id, deep_course.id):
+                exists = CourseEnrollment.query.filter_by(course_id=cid, student_id=student.id).first()
+                if not exists:
+                    db.session.add(CourseEnrollment(course_id=cid, student_id=student.id))
+
+        all_pdfs = sorted(
+            [
+                p
+                for p in uploads_dir.glob("*.pdf")
+                if p.name != ".gitkeep" and not re.fullmatch(r"[0-9a-f]{32}\.pdf", p.name)
+            ],
+            key=lambda p: p.name.lower(),
+        )
+        if not all_pdfs:
+            db.session.commit()
+            print("No real PDFs found in uploads/. Add files and rerun flask seed-course-materials.")
+            return
+
+        split_index = (len(all_pdfs) + 1) // 2
+        cloud_files = all_pdfs[:split_index]
+        deep_files = all_pdfs[split_index:]
+
+        inserted = 0
+
+        def _import(files: list[Path], course: Course, uploader_id: int):
+            nonlocal inserted
+            for pdf_path in files:
+                file_key = pdf_path.name
+                exists = Material.query.filter_by(file_url=file_key).first()
+                if exists:
+                    exists.course_id = course.id
+                    exists.uploaded_by = uploader_id
+                    if exists.title == "Sample lecture (seed PDF)":
+                        exists.title = pdf_path.stem.replace("_", " ").replace("-", " ").strip()
+                    continue
+                title = pdf_path.stem.replace("_", " ").replace("-", " ").strip()
+                db.session.add(
+                    Material(
+                        title=title,
+                        file_url=file_key,
+                        uploaded_by=uploader_id,
+                        course_id=course.id,
+                    )
+                )
+                inserted += 1
+
+        _import(cloud_files, cloud_course, inst1.id)
+        _import(deep_files, deep_course, inst2.id)
+        db.session.commit()
+        print(
+            f"Imported/updated {len(all_pdfs)} PDFs across two courses "
+            f"(Cloud={len(cloud_files)}, Deep Learning={len(deep_files)}). New rows: {inserted}."
+        )
 
     @app.cli.command("seed-demo")
     def seed_demo():
